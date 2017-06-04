@@ -100,8 +100,15 @@
           (inits (take (dec (count a-seq)) a-seq)))))
 
 (defn rotations [a-seq]
-  (concat (rest a-seq)
-        (list (first a-seq))))
+  (if (empty? a-seq)
+    (list '())
+    (loop [cur-seq a-seq
+           seqs (list (apply list a-seq))]
+      (if (= (count seqs) (count a-seq))
+        seqs
+        (let [next-seq (conj (apply vector (rest cur-seq)) (first cur-seq))]
+          (recur next-seq
+                 (conj seqs (apply list next-seq))))))))
 
 (defn my-frequencies-helper [freqs a-seq]
   (if (empty? a-seq)
@@ -153,7 +160,11 @@
       (seq-merge (rest a-seq) new-b))))
 
 (defn merge-sort [a-seq]
-  [:-])
+  (cond (empty? a-seq) a-seq
+        (= (count a-seq) 1) a-seq
+        :else (let [halves (halve a-seq)]
+                (seq-merge (merge-sort (first halves))
+                           (merge-sort (last halves))))))
 
 (defn split-into-monotonics [a-seq]
   [:-])
